@@ -1,9 +1,9 @@
 # nodejs-tutorial-hello-world
 
 A minimal, dependency-free Node.js HTTP server written as a beginner tutorial. It exposes one route,
-`GET /hello`, plus a catch-all that answers `404` to every other method and path. Both respond as
-plain text. The server rests on Node.js's built-in `http` module alone — no framework, no
-middleware, no routing library, and no dependency of any kind.
+`GET /hello`, plus a catch-all that answers `404` to every other request the handler receives. Both
+respond as plain text. The server rests on Node.js's built-in `http` module alone — no framework,
+no middleware, no routing library, and no dependency of any kind.
 
 Minimal does not mean incomplete. `server.js` is the entire program, and reading it end to end shows
 the full lifecycle of an HTTP service: the port is resolved and validated, the port is bound, every
@@ -86,7 +86,7 @@ Content-Length: 11
 Hello world
 ```
 
-### Any other method or path — 404
+### Any other method or path the handler receives — 404
 
 ```text
 HTTP/1.1 404 Not Found
@@ -120,14 +120,19 @@ included.
 
 ### Which requests match
 
-Only `GET /hello` returns `Hello world`; every other method and path returns `Not Found`. Three
-details are worth knowing:
+Only `GET /hello` returns `Hello world`; every other method and path the request handler receives
+returns `Not Found`. Four details are worth knowing:
 
 - The query string is removed before the path is compared, so `GET /hello?x=1` returns `200` with
   `Hello world`. No query parameter is ever read.
 - A trailing slash is not normalised, so `GET /hello/` returns `404`.
 - The request target is compared literally, so `//x/hello`, `http://evil.com/hello` and
   `/a/../hello` all return `404` rather than being interpreted as `/hello`.
+- Requests Node.js settles itself never reach the handler, so the catch-all cannot answer them and
+  they are not written to the request log: a malformed request target is refused with `400 Bad
+  Request`, and a `CONNECT` request — the method that asks for a tunnel, which this server does
+  not provide — is closed by Node.js with no response at all. Every request the handler receives
+  is answered `200` or `404`.
 
 ### Start-up errors
 
