@@ -119,4 +119,27 @@ function startServer() {
   });
 }
 
+// A console sink can fail - a full disk or a closed pipe - and the stream's "error"
+// event has no listener by default, which aborts the process with a stack trace.
+// Report the failed write once on stderr and keep serving, so the request pipeline
+// continues and the shutdown path still reaches the contracted exit status.
+let consoleWriteErrorReported = false;
+
+// reportConsoleWriteError(error): reports the first failed console write and marks it
+// reported, so a permanently broken sink neither floods stderr nor recurses.
+function reportConsoleWriteError(error) {
+  if (consoleWriteErrorReported) {
+    return;
+  }
+
+  consoleWriteErrorReported = true;
+  console.error(
+    `Failed to write to the console: ${error.message}. Log output is lost until ` +
+      "the console accepts writes again; the server keeps running."
+  );
+}
+
+process.stdout.on("error", reportConsoleWriteError);
+process.stderr.on("error", reportConsoleWriteError);
+
 startServer();
