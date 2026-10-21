@@ -26,7 +26,8 @@ function resolvePort(rawValue) {
 }
 
 // logRequest(req): writes one stdout line - ISO-8601 UTC timestamp, method and url.
-// The url is logged verbatim and never decoded, so a client cannot forge log lines.
+// The url is logged verbatim and never decoded: the parser rejects CR and LF in a
+// request target, and decoding is what would turn "%0d%0a" into a line break.
 function logRequest(req) {
   console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
 }
