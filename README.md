@@ -102,7 +102,8 @@ Not Found
 `Date`, `Connection` and `Keep-Alive` are added by Node.js itself, and the `Date` value is the time
 of each response, so it differs from request to request. `Content-Type` is sent verbatim as
 `text/plain`. The bodies are exactly `Hello world` (11 bytes) and `Not Found` (9 bytes), with no
-trailing newline. A `HEAD` request receives the `404` status and headers without a body.
+trailing newline. A `HEAD` request receives the `404` status and headers without a body or
+`Content-Length`, because Node.js suppresses both for `HEAD`.
 
 ### Request log lines
 
