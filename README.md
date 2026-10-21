@@ -159,8 +159,8 @@ Failed to start server on port 3000: EACCES. Check that the port is free and per
 ### When the console cannot be written to
 
 If the stream the server logs to stops accepting writes — a full disk, or a pipe whose reader has
-gone away — the failed write is reported once on stderr and the server keeps running, so requests are
-still served and CTRL+C still exits with status `0`:
+gone away — the failed write is reported once on stderr and the server keeps running, so requests
+are still served and CTRL+C still exits with status `0`:
 
 ```text
 Failed to write to the console: ENOSPC: no space left on device, write. Log output is lost until the console accepts writes again; the server keeps running.
