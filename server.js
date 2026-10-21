@@ -97,11 +97,12 @@ function handleShutdown(server) {
 // startServer(): resolves PORT, wires the listeners, then binds the port and logs the
 // start-up line; the listeners go on before listen() so a failed bind is still reported.
 function startServer() {
-  const port = resolvePort(process.env.PORT);
+  const rawPort = process.env.PORT;
+  const port = resolvePort(rawPort);
 
   if (port === null) {
     console.error(
-      `Invalid PORT value "${process.env.PORT}": PORT must be an integer ` +
+      `Invalid PORT value "${rawPort}": PORT must be an integer ` +
         `between ${MIN_PORT} and ${MAX_PORT}.`
     );
     process.exitCode = 1;
